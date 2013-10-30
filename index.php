@@ -73,6 +73,22 @@ $teamNames = array(
 		"CentOS",
 		"Fedora"
 		),
+	"Distriktskontor" => array(
+		"Husnes",
+		"Haugesund",
+		"Stord",
+		"Bømlo",
+		"Os",
+		"Jørpeland"
+		),
+	"Avdelinger" => array(
+		"Drift",
+		"Maskinvare",
+		"Systemutvikling",
+		"Telekom",
+		"Rådgivning",
+		"Webutviklng"
+		),
 	"Lag {nummer}" => 'number',
 	"Team {nummer}" => 'number'
 	);
@@ -148,7 +164,7 @@ $teamTypes = array(
 						</div>
 					</form>
 				</div>
-				<?php if (isset($_POST['generateTeams'])) : ?>
+				<?php if (isset($_POST['generateTeams']) && isset($_POST['players']) && count($_POST['players']) > 1) : ?>
 					<br/>
 					<div class="flg_team">
 						<?php
@@ -215,37 +231,87 @@ $teamTypes = array(
 				$gamesFirstRound = round($noTeams / 2, 0, PHP_ROUND_HALF_DOWN);
 				$gamesSpare = round($noTeams / 2, 0, PHP_ROUND_HALF_UP) - $gamesFirstRound;
 			?>
-				no teams: <?php echo $noTeams; ?><br/>
-				first round games: <?php echo $gamesFirstRound; ?><br/>
-				first game to spare: <?php echo $gamesSpare; ?><br />
-
 			<div class="row flg_game">
 			<?php
 				$team = 0;
+				$matches = array();
 				for ($i = 0; $i < $gamesFirstRound; $i++) :
 					$team1 = $_SESSION['teams'][$team];
 					$team++;
 					$team2 = $_SESSION['teams'][$team];
-					$team++; ?>
+					$team++;
+					$matches[] = array($team1, $team2);
+					?>
+				<?php endfor; ?>
+				<?php if ($_GET['game'] <= count($matches)) : ?>
+
+					<?php $match = $matches[$_GET['game'] - 1]; ?>
+					<?php if ((isset($_GET['teamone_goals']) && $_GET['teamone_goals'] >= 10) or (isset($_GET['teamtwo_goals']) && $_GET['teamtwo_goals'] >= 10)) :
+						$match[0]['goals'] = $_GET['teamone_goals'];
+						$match[1]['goals'] = $_GET['teamtwo_goals'];
+						if (isset($_GET['teamone_goals']) && $_GET['teamone_goals'] >= 10) {
+							$winner = $match[0];
+						}
+						elseif (isset($_GET['teamtwo_goals']) && $_GET['teamtwo_goals'] >= 10) {
+							$winner = $match[1];
+						}
+						$_SESSION['results'][] = $match;
+					?>
+					<h1 class="winner_title">Gratulerer, <?php echo $winner['name']; ?>!</h1>
+					<h3 class="winner_sub_title">Dere vant</h3>
+					<br />
+					<?php if ($_GET['game'] < count($matches)) : ?>
+						<div class="row">
+							<div class="col-md-4 flg_action">
+								<a class="btn btn-success btn-large btn-block" href="?game=<?php echo ($_GET['game'] + 1); ?>">Neste spill</a>
+							</div>
+						</div>
+					<?php endif; ?>
+					<?php else: ?>
 					<div class="col-md-12">
 						<legend class="clearfix">
 							<span style="float:left; display: block; width: 45%;">
-								<?php echo $team1['name']; ?>
+								<?php echo $match[0]['name']; ?>
 							</span>
 							<span style="float:left; display: block; width: 10%; text-align: center;">
 								<small>vs</small>
 							</span>
 							<span style="float:left; display: block; width: 45%; text-align: right;">
-								<?php echo $team2['name']; ?>
+								<?php echo $match[1]['name']; ?>
 							</span>
 						</legend>
 					</div>
-				<?php endfor; ?>
-			</div>
-
-			<pre>
-				<?php print_r($_SESSION['teams']); ?>
-			</pre>
+					<div class="col-xs-6">
+						<div class="goals" id="teamone_goals">
+							<?php echo ((isset($_GET['teamone_goals'])) ? $_GET['teamone_goals'] : '0'); ?>
+						</div>
+						<a href="?game=<?php echo $_GET['game']; ?>&teamone_goals=<?php echo (((isset($_GET['teamone_goals'])) ? $_GET['teamone_goals'] : '0') + 1); ?>&teamtwo_goals=<?php echo ((isset($_GET['teamtwo_goals'])) ? $_GET['teamtwo_goals'] : '0'); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamone_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
+						<br/>
+						<label>Spillere:</label>
+						<br />
+						<ul class="list-unstyled">
+						<?php foreach ($match[0]['players'] as $player) : ?>
+							<li><?php echo $player; ?></li>
+						<?php endforeach; ?>
+						</ul>
+					</div>
+					<div class="col-xs-6">
+						<div class="goals" id="teamtwo_goals">
+							<?php echo ((isset($_GET['teamtwo_goals'])) ? $_GET['teamtwo_goals'] : '0'); ?>
+						</div>
+						<a href="?game=<?php echo $_GET['game']; ?>&teamone_goals=<?php echo ((isset($_GET['teamone_goals'])) ? $_GET['teamone_goals'] : '0'); ?>&teamtwo_goals=<?php echo (((isset($_GET['teamtwo_goals'])) ? $_GET['teamtwo_goals'] : '0') + 1); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamtwo_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
+						<br/>
+						<label>Spillere:</label>
+						<br />
+						<ul class="list-unstyled">
+						<?php foreach ($match[1]['players'] as $player) : ?>
+							<li><?php echo $player; ?></li>
+						<?php endforeach; ?>
+						</ul>
+					</div>
+					<?php endif; ?>
+				</div>
+				<?php endif; ?>
 			<?php endif; ?>
 		</div>
 		<script src="/assets/vendor/jquery/jquery.js"></script>

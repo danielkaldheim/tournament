@@ -1,6 +1,7 @@
 @vendorPath: "../vendor";
 @bootstrapPath: "@{vendorPath}/bootstrap/less";
 
+@import url(http://fonts.googleapis.com/css?family=Share+Tech);
 /**
  * Includes
  */
@@ -85,5 +86,23 @@
 	.flg_action {
 		float: none;
 		margin: 0 auto;
+	}
+	.flg_game {
+		.winner_title {
+			text-align: center;
+		}
+		.winner_sub_title {
+			text-align: center;
+		}
+		.goals {
+			font-family: 'Share Tech', sans-serif;
+			text-align: center;
+			font-size: 100px;
+		}
+		.btn {
+			&.new_goal {
+				font-size: 30px;
+			}
+		}
 	}
 }
