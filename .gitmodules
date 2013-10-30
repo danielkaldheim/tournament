@@ -1,0 +1,3 @@
+[submodule "assets/bracket"]
+	path = assets/bracket
+	url = https://github.com/teijo/jquery-bracket.git
