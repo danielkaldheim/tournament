@@ -1,0 +1,89 @@
+@vendorPath: "../vendor";
+@bootstrapPath: "@{vendorPath}/bootstrap/less";
+
+/**
+ * Includes
+ */
+// Core variables and mixins
+@import "@{bootstrapPath}/variables.less";
+@import "@{bootstrapPath}/mixins.less";
+
+// Reset
+@import "@{bootstrapPath}/normalize.less";
+@import "@{bootstrapPath}/print.less";
+
+// Core CSS
+@import "@{bootstrapPath}/scaffolding.less";
+@import "@{bootstrapPath}/type.less";
+@import "@{bootstrapPath}/code.less";
+@import "@{bootstrapPath}/grid.less";
+@import "@{bootstrapPath}/tables.less";
+@import "@{bootstrapPath}/forms.less";
+@import "@{bootstrapPath}/buttons.less";
+
+// Components
+@import "@{bootstrapPath}/component-animations.less";
+@import "@{bootstrapPath}/glyphicons.less";
+@import "@{bootstrapPath}/dropdowns.less";
+@import "@{bootstrapPath}/button-groups.less";
+@import "@{bootstrapPath}/input-groups.less";
+@import "@{bootstrapPath}/navs.less";
+@import "@{bootstrapPath}/navbar.less";
+@import "@{bootstrapPath}/breadcrumbs.less";
+@import "@{bootstrapPath}/pagination.less";
+@import "@{bootstrapPath}/pager.less";
+@import "@{bootstrapPath}/labels.less";
+@import "@{bootstrapPath}/badges.less";
+@import "@{bootstrapPath}/jumbotron.less";
+@import "@{bootstrapPath}/thumbnails.less";
+@import "@{bootstrapPath}/alerts.less";
+@import "@{bootstrapPath}/progress-bars.less";
+@import "@{bootstrapPath}/media.less";
+@import "@{bootstrapPath}/list-group.less";
+@import "@{bootstrapPath}/panels.less";
+@import "@{bootstrapPath}/wells.less";
+@import "@{bootstrapPath}/close.less";
+
+// Components w/ JavaScript
+@import "@{bootstrapPath}/modals.less";
+@import "@{bootstrapPath}/tooltip.less";
+@import "@{bootstrapPath}/popovers.less";
+@import "@{bootstrapPath}/carousel.less";
+
+// Utility classes
+@import "@{bootstrapPath}/utilities.less";
+@import "@{bootstrapPath}/responsive-utilities.less";
+
+// Animate css
+@import (less) "@{vendorPath}/animate.css/animate.css";
+
+// Bootstrap-select
+@import (less) "@{vendorPath}/bootstrap-select/bootstrap-select.css";
+
+// Font Awesome
+@import "@{vendorPath}/font-awesome/less/variables.less";
+@import "@{vendorPath}/font-awesome/less/mixins.less";
+@import "@{vendorPath}/font-awesome/less/path.less";
+@import "@{vendorPath}/font-awesome/less/core.less";
+@import "@{vendorPath}/font-awesome/less/bootstrap.less";
+@import "@{vendorPath}/font-awesome/less/extras.less";
+@import "@{vendorPath}/font-awesome/less/icons.less";
+
+/**
+ * Includes end
+ */
+
+@import "variables.less";
+
+
+.container {
+	.animated;
+	.animated.fadeIn;
+
+	.flg_options {
+	}
+	.flg_action {
+		float: none;
+		margin: 0 auto;
+	}
+}
