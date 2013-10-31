@@ -281,7 +281,7 @@ $teamTypes = array(
 					}
 				}
 				if (countMatches($bracket) == 0) {
-					echo "<h1>Vennligst velg flere lag</h1>";
+					echo "<h4>Feil!<br/><small>Vennligst velg flere lag</small></h4>";
 				}
 				if ((isset($_GET['c1_goals']) && $_GET['c1_goals'] >= 10) or (isset($_GET['c2_goals']) && $_GET['c2_goals'] >= 10)) {
 					if ($next_round == $currentRound && $next_match == $currentMatch) {
@@ -291,7 +291,7 @@ $teamTypes = array(
 							$winner = $final['c2'];
 						}
 						$players = $winner['players'];
-						if (count($players > 1)) {
+						if (count($players) > 1) {
 							$last_pl = array_pop($players);
 						}
 						?>
@@ -299,7 +299,7 @@ $teamTypes = array(
 							<i class="fa fa-trophy"></i>
 						</center>
 						<h1 class="winner_title"><?php echo $winner['name']; ?></h1>
-						<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, dere vant <?php echo ((countMatches($bracket) > 1) ? 'turneringen' : 'kampen'); ?>!</h3>
+						<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, <?php echo ((count($players) > 1) ? 'dere' : 'du'); ?> vant <?php echo ((countMatches($bracket) > 1) ? 'turneringen' : 'kampen'); ?>!</h3>
 						<?php
 					}
 					else {
