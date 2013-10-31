@@ -117,17 +117,24 @@
 			}
 		}
 	}
-}
-.fa-trophy {
-	color: #f1c40f;
-	font-size: 20em;
-	.text-shadow(3px 3px 0px #f39c12);
-}
+	.btn {
+		.transition(all 250ms ease-in-out);
+	}
+	.fa-trophy {
+		color: #f1c40f;
+		font-size: 20em;
+		.text-shadow(3px 3px 0px #f39c12);
+
+		.animated;
+		.animated.tada;
+	}
 
 
-.btn-dark {
-  .button-variant(@btn-dark-color; @btn-dark-bg; @btn-dark-border);
+	.btn-dark {
+		.button-variant(@btn-dark-color; @btn-dark-bg; @btn-dark-border);
+	}
 }
+
 
 
 
