@@ -11,35 +11,11 @@ $players = array(
 	"Lasse Skogland",
 	"Nils Reidar Hovden",
 	"Yngve Solberg",
-	"Torbjørn Lærlingson",
+	"Torbjørn Tollaksen",
 	"Sindre Seim Johansen",
 	"Daniel Rufus Kaldheim",
 	"Magnus Hauge Bakke",
 	);
-
-// global $first; $first= array('Per', 'Pål', 'Ole', 'Lise', 'Mette', 'Nina', 'Geir', 'Janne');
-// global $last; $last = array('Olsen', 'Jonson', 'Norman', "Eriksen");
-
-// function genName() {
-// 	$first = $GLOBALS['first'];
-// 	$last = $GLOBALS['last'];
-// 	return $first[rand(0, count($first) - 1)]." ".$last[rand(0, count($last) - 1)];
-// }
-// $try = 0;
-// for ($i = 0; $i <= 9; $i++) {
-// 	$name = genName();
-// 	if (in_array($name, $players)) {
-// 		$i--;
-// 		$try++;
-// 	}
-// 	else {
-// 		$try = 0;
-// 		$players[] = $name;
-// 	}
-// 	if ($try == ((count($first) * count($last))) * 2) {
-// 		break;
-// 	}
-// }
 
 $teamNames = array(
 	"Kattepusar" => array(
@@ -283,6 +259,10 @@ $teamTypes = array(
 				if (countMatches($bracket) == 0) {
 					echo "<h4>Feil!<br/><small>Vennligst velg flere lag</small></h4>";
 				}
+				$flip = false;
+				if ((isset($_GET['c1_goals']) && $_GET['c1_goals'] >= 5) or (isset($_GET['c2_goals']) && $_GET['c2_goals'] >= 5)) {
+					$flip = true;
+				}
 				if ((isset($_GET['c1_goals']) && $_GET['c1_goals'] >= 10) or (isset($_GET['c2_goals']) && $_GET['c2_goals'] >= 10)) {
 					if ($next_round == $currentRound && $next_match == $currentMatch) {
 						$final = $bracket[$currentRound][$currentMatch];
@@ -303,7 +283,14 @@ $teamTypes = array(
 						<?php
 					}
 					else {
+						$final = $bracket[$currentRound][$currentMatch];
+						$winner = $final['c1'];
+						if ($final['s1'] < $final['s2']) {
+							$winner = $final['c2'];
+						}
 						?>
+						<h1 class="winner_title"><?php echo $winner['name']; ?></h1>
+						<h3 class="winner_sub_title">Gratulerer, dere er videre!</h3>
 						<div class="row">
 							<div class="col-md-4 flg_action">
 								<a class="btn btn-success btn-large btn-block" href="?round=<?php echo $next_round; ?>&match=<?php echo $next_match; ?>">Neste spill</a>
@@ -336,7 +323,7 @@ $teamTypes = array(
 								<div class="goals" id="c1_goals">
 									<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>
 								</div>
-								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo (((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0') + 1); ?>&c2_goals=<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamone_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
+								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo (((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0') + 1); ?>&c2_goals=<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>" class="btn btn-large <?php echo (($flip) ? 'btn-dark' : 'btn-default'); ?> btn-block new_goal" id="teamone_new_goal">&nbsp;<br/><br />Mål!<br/><br/>&nbsp;</a>
 								<br/>
 								<label>Spillere:</label>
 								<br />
@@ -350,7 +337,7 @@ $teamTypes = array(
 								<div class="goals" id="c2_goals">
 									<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>
 								</div>
-								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>&c2_goals=<?php echo (((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0') + 1); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamtwo_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
+								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>&c2_goals=<?php echo (((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0') + 1); ?>" class="btn btn-large <?php echo (($flip) ? 'btn-default' : 'btn-dark'); ?> btn-block new_goal" id="teamtwo_new_goal">&nbsp;<br/><br />Mål!<br/><br/>&nbsp;</a>
 								<br/>
 								<label>Spillere:</label>
 								<br />
@@ -370,8 +357,8 @@ $teamTypes = array(
 				<?php
 			}
 			?>
-			<br /><br/>
-			<a href="/" class="btn btn-danger">Reset</a>
+			<br /><br/><br />
+			<a href="/" class="btn btn-danger">Tilbakestill</a>
 			<?php endif; ?>
 		</div>
 	</body>
