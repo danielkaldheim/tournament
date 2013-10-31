@@ -62,19 +62,17 @@
 @import (less) "@{vendorPath}/bootstrap-select/bootstrap-select.css";
 
 // Font Awesome
-@import "@{vendorPath}/font-awesome/less/variables.less";
-@import "@{vendorPath}/font-awesome/less/mixins.less";
-@import "@{vendorPath}/font-awesome/less/path.less";
-@import "@{vendorPath}/font-awesome/less/core.less";
-@import "@{vendorPath}/font-awesome/less/bootstrap.less";
-@import "@{vendorPath}/font-awesome/less/extras.less";
-@import "@{vendorPath}/font-awesome/less/icons.less";
+@import "@{vendorPath}/font-awesome/less/font-awesome.less";
+
+// Bracket
+@import (less) "../bracket/dist/jquery.bracket.min.css";
 
 /**
  * Includes end
  */
 
 @import "variables.less";
+@import "mixin.less";
 
 
 .container {
@@ -105,4 +103,9 @@
 			}
 		}
 	}
+}
+.fa-trophy {
+	color: #f1c40f;
+	font-size: 20em;
+	.text-shadow(3px 0 5px rgba(0, 0, 0, 0.25));
 }

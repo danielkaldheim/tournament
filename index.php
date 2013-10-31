@@ -2,6 +2,7 @@
 session_start();
 ob_start();
 ini_set('display_errors', 'On');
+include("class_knockout.php");
 $players = array(
 	"Stian Lauknes",
 	"Kenneth Johanson",
@@ -118,6 +119,14 @@ $teamTypes = array(
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>iDrift Fußball Lag Generator</title>
 		<link href="assets/styles/style.css" rel="stylesheet">
+
+		<script src="/assets/vendor/jquery/jquery.js"></script>
+		<script src="/assets/vendor/bootstrap/js/button.js"></script>
+		<script src="/assets/vendor/bootstrap/js/dropdown.js"></script>
+		<script src="/assets/vendor/bootstrap/js/tooltip.js"></script>
+		<script src="/assets/vendor/bootstrap-select/bootstrap-select.js"></script>
+		<script src="/assets/bracket/dist/jquery.bracket.min.js"></script>
+		<script src="/assets/js/common.js"></script>
 	</head>
 
 	<body>
@@ -125,7 +134,9 @@ $teamTypes = array(
 			<div class="page-header">
 				<h1>iDrift Fußball Lag Generator</h1>
 			</div>
-			<?php if (!isset($_GET['game'])) : ?>
+			<?php if (!isset($_GET['round']) && !isset($_GET['match'])) :
+				$_SESSION['results'] = null;
+			?>
 				<div class="flg_options <?php echo (($_GET['generateTeams']) ? 'hide_options' : ''); ?>">
 					<form method="POST" action="<?php $_SERVER['REQUEST_URI']; ?>">
 						<div class="row">
@@ -212,8 +223,6 @@ $teamTypes = array(
 								</ul>
 							</div>
 						<?php endforeach;
-
-
 						$_SESSION['teams'] = $sessionTeam;
 						?>
 						</div>
@@ -221,16 +230,146 @@ $teamTypes = array(
 					<br/>
 					<div class="row">
 						<div class="col-md-4 flg_action">
-							<a class="btn btn-success btn-large btn-block" href="?game=1">Start spill</a>
+							<a class="btn btn-success btn-large btn-block" href="?round=0&match=0">Start spill</a>
 						</div>
 					</div>
 				<?php endif; ?>
 			<?php endif; ?>
-			<?php if (isset($_GET['game'])) :
+			<?php if (isset($_GET['round']) && isset($_GET['match'])) :
 				$noTeams = count($_SESSION['teams']);
 				$gamesFirstRound = round($noTeams / 2, 0, PHP_ROUND_HALF_DOWN);
 				$gamesSpare = round($noTeams / 2, 0, PHP_ROUND_HALF_UP) - $gamesFirstRound;
+				$compets = array();
+				foreach ($_SESSION['teams'] as $comp) {
+					$compets[] = $comp['name'];
+				}
+
+				$KO = new KnockoutGD($_SESSION['teams']);
 			?>
+			<div class="row flg_game">
+				<?php
+
+				if ((isset($_GET['c1_goals']) && $_GET['c1_goals'] >= 10) or (isset($_GET['c2_goals']) && $_GET['c2_goals'] >= 10)) {
+					$_SESSION['results'][$_GET['round']][$_GET['match']] = array(
+						'c1_goals' => $_GET['c1_goals'],
+						'c2_goals' => $_GET['c2_goals']
+						);
+				}
+
+				if (isset($_SESSION['results'])) {
+					foreach ($_SESSION['results'] as $round => $match) {
+						foreach($match as $match_no => $goals) {
+							$KO->setResByMatch((int)$match_no, (int)$round, (int)$goals['c1_goals'], (int)$goals['c2_goals']);
+						}
+					}
+				}
+
+				$bracket = $KO->getBracket();
+				$roundInfo = $KO->roundsInfo;
+
+				if ((isset($_GET['c1_goals']) && $_GET['c1_goals'] >= 10) or (isset($_GET['c2_goals']) && $_GET['c2_goals'] >= 10)) {
+					$next_match = 0;
+					$next_round = 0;
+					foreach ($bracket as $round => $match) {
+						$next_round = $round;
+						foreach ($match as $match_no => $info) {
+							$next_match = $match_no;
+							if ($_GET['round'] == $round && $match_no > $_GET['match']) {
+								break 2;
+							}
+							elseif (($_GET['round'] + 1) == $round && $match_no == 0) {
+								break 2;
+							}
+						}
+					}
+					if ($next_round == $_GET['round'] && $next_match == $_GET['match']) {
+						$final = $bracket[$_GET['round']][$_GET['match']];
+						$winner = $final['c1'];
+						if ($final['s1'] < $final['s2']) {
+							$winner = $final['c2'];
+						}
+						$players = $winner['players'];
+						if (count($players > 1)) {
+							$last_pl = array_pop($players);
+						}
+						?>
+						<center>
+							<i class="fa fa-trophy"></i>
+						</center>
+						<h1 class="winner_title"><?php echo $winner['name']; ?></h1>
+						<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, dere vant turneringen!</h3>
+						<?php
+					}
+					else {
+						?>
+						<div class="row">
+							<div class="col-md-4 flg_action">
+								<a class="btn btn-success btn-large btn-block" href="?round=<?php echo $next_round; ?>&match=<?php echo $next_match; ?>">Neste spill</a>
+							</div>
+						</div>
+						<?php
+					}
+				}
+				else {
+
+
+				foreach($bracket as $round => $match) :
+					if ($_GET['round'] == $round) : ?>
+					<?php
+						foreach ($match as $no => $info) :
+							if ($_GET['match'] == $no) : ?>
+						<div class="col-md-12">
+							<h1><?php echo $roundInfo[$round][0]; ?></h1>
+							<legend class="clearfix">
+								<span style="float:left; display: block; width: 45%;">
+									<?php echo $info['c1']['name']; ?>
+								</span>
+								<span style="float:left; display: block; width: 10%; text-align: center;">
+									<small>vs</small>
+								</span>
+								<span style="float:left; display: block; width: 45%; text-align: right;">
+									<?php echo $info['c2']['name']; ?>
+								</span>
+							</legend>
+						</div>
+						<div class="col-xs-6">
+							<div class="goals" id="c1_goals">
+								<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>
+							</div>
+							<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo (((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0') + 1); ?>&c2_goals=<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamone_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
+							<br/>
+							<label>Spillere:</label>
+							<br />
+							<ul class="list-unstyled">
+							<?php foreach ($info['c1']['players'] as $player) : ?>
+								<li><?php echo $player; ?></li>
+							<?php endforeach; ?>
+							</ul>
+						</div>
+						<div class="col-xs-6">
+							<div class="goals" id="c2_goals">
+								<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>
+							</div>
+							<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>&c2_goals=<?php echo (((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0') + 1); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamtwo_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
+							<br/>
+							<label>Spillere:</label>
+							<br />
+							<ul class="list-unstyled">
+							<?php foreach ($info['c2']['players'] as $player) : ?>
+								<li><?php echo $player; ?></li>
+							<?php endforeach; ?>
+							</ul>
+						</div>
+					<?php
+						endif;
+					endforeach; ?>
+				<?php
+					endif;
+				endforeach; ?>
+			</div>
+			<?php
+			}
+			/*?>
 			<div class="row flg_game">
 			<?php
 				$team = 0;
@@ -255,7 +394,7 @@ $teamTypes = array(
 						elseif (isset($_GET['teamtwo_goals']) && $_GET['teamtwo_goals'] >= 10) {
 							$winner = $match[1];
 						}
-						$_SESSION['results'][] = $match;
+						$_SESSION['results'][($_GET['game'] - 1)] = $match;
 					?>
 					<h1 class="winner_title">Gratulerer, <?php echo $winner['name']; ?>!</h1>
 					<h3 class="winner_sub_title">Dere vant</h3>
@@ -311,14 +450,8 @@ $teamTypes = array(
 					</div>
 					<?php endif; ?>
 				</div>
-				<?php endif; ?>
+				<?php endif; */?>
 			<?php endif; ?>
 		</div>
-		<script src="/assets/vendor/jquery/jquery.js"></script>
-		<script src="/assets/vendor/bootstrap/js/button.js"></script>
-		<script src="/assets/vendor/bootstrap/js/dropdown.js"></script>
-		<script src="/assets/vendor/bootstrap/js/tooltip.js"></script>
-		<script src="/assets/vendor/bootstrap-select/bootstrap-select.js"></script>
-		<script src="/assets/js/common.js"></script>
 	</body>
 </html>
