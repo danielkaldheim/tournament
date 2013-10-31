@@ -219,11 +219,11 @@ class Knockout
         for ($r = 1, $n = count($this->bracket[1])*2; $n > 1; $r++, $n /= 2) {
             switch ($n)
             {
-                case 16: $name = 'Round of 16'; break;
-                case 8:  $name = 'Quarter-finals'; break;
-                case 4:  $name = 'Semi-finals'; break;
-                case 2:  $name = 'Final'; break;
-                default: $name = "Round $r"; break;
+                case 16: $name = 'Octofinale'; break;
+                case 8:  $name = 'Kvartfinalene'; break;
+                case 4:  $name = 'Semi-finale'; break;
+                case 2:  $name = 'Finale'; break;
+                default: $name = "Runde $r"; break;
             }
 
             array_push($rounds, array($name, $n));
@@ -235,7 +235,7 @@ class Knockout
 
         // If play-in round exists, we add it now.
         if (!empty($this->bracket[0]))
-            array_unshift($rounds, array('Play-in round', count($this->bracket[0])*2));
+            array_unshift($rounds, array('Innspill', count($this->bracket[0])*2));
 
         return $rounds;
     }
@@ -379,7 +379,7 @@ class KnockoutGD extends Knockout {
 
             foreach ($this->bracket[$r] as $m) {
                 for ($i = 1; $i <= 2; $i++, $y += $bheight) {
-                    $this->mkStr($x+$lpad,     $y, $m['s'.$i] == -1 ? 'Undecided' : $m['c'.$i]);
+                    $this->mkStr($x+$lpad,     $y, $m['s'.$i] == -1 ? 'Uavgjort' : $m['c'.$i]);
                     $this->mkStr($x+$lw-$lpad, $y, $m['s'.$i] == -1 ? '?'         : $m['s'.$i]);
                     $this->mkLine($x, $y+$fh, $x+$lw, $y+$fh);
                 }
@@ -402,7 +402,7 @@ class KnockoutGD extends Knockout {
                         ? $this->bracket[$fr][0]['c1']
                         : $this->bracket[$fr][0]['c2']);
 
-        $this->mkStr($rx+$lpad, $ry, 'Winner: ' . $winner);
+        $this->mkStr($rx+$lpad, $ry, 'Vinner: ' . $winner);
         $this->mkLine($rx, $ry+$fh, $rx+$lw, $ry+$fh);
 
         // Now, we print the round titles.
