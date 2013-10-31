@@ -299,7 +299,7 @@ $teamTypes = array(
 							<i class="fa fa-trophy"></i>
 						</center>
 						<h1 class="winner_title"><?php echo $winner['name']; ?></h1>
-						<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, <?php echo ((count($players) > 1) ? 'dere' : 'du'); ?> vant <?php echo ((countMatches($bracket) > 1) ? 'turneringen' : 'kampen'); ?>!</h3>
+						<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, <?php echo ((count($winner['players']) > 1) ? 'dere' : 'du'); ?> vant <?php echo ((countMatches($bracket) > 1) ? 'turneringen' : 'kampen'); ?>!</h3>
 						<?php
 					}
 					else {
