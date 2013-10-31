@@ -323,7 +323,7 @@ $teamTypes = array(
 								<div class="goals" id="c1_goals">
 									<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>
 								</div>
-								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo (((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0') + 1); ?>&c2_goals=<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>" class="btn btn-large <?php echo (($flip) ? 'btn-dark' : 'btn-default'); ?> btn-block new_goal" id="teamone_new_goal">&nbsp;<br/><br />Mål!<br/><br/>&nbsp;</a>
+								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo (((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0') + 1); ?>&c2_goals=<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>" class="btn btn-large <?php echo (($flip) ? 'btn-dark' : 'btn-default'); ?> btn-block new_goal" id="teamone_new_goal">Mål!</a>
 								<br/>
 								<label>Spillere:</label>
 								<br />
@@ -337,7 +337,7 @@ $teamTypes = array(
 								<div class="goals" id="c2_goals">
 									<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>
 								</div>
-								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>&c2_goals=<?php echo (((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0') + 1); ?>" class="btn btn-large <?php echo (($flip) ? 'btn-default' : 'btn-dark'); ?> btn-block new_goal" id="teamtwo_new_goal">&nbsp;<br/><br />Mål!<br/><br/>&nbsp;</a>
+								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>&c2_goals=<?php echo (((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0') + 1); ?>" class="btn btn-large <?php echo (($flip) ? 'btn-default' : 'btn-dark'); ?> btn-block new_goal" id="teamtwo_new_goal">Mål!</a>
 								<br/>
 								<label>Spillere:</label>
 								<br />
