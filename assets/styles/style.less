@@ -100,6 +100,18 @@
 		.btn {
 			&.new_goal {
 				font-size: 30px;
+				.box-shadow(0 2px 0 #e74c3c);
+				.border-bottom-radius(0);
+				border-bottom: none;
+
+				&:hover {
+					.box-shadow(0 2px 0 #000);
+				}
+			}
+			&.btn-dark {
+				&:hover {
+					.box-shadow(0 2px 0 darken(#fff, 20%));
+				}
 			}
 		}
 	}
@@ -107,7 +119,7 @@
 .fa-trophy {
 	color: #f1c40f;
 	font-size: 20em;
-	.text-shadow(3px 0 5px rgba(0, 0, 0, 0.25));
+	.text-shadow(3px 3px 0px #f39c12);
 }
 
 
