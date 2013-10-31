@@ -93,15 +93,7 @@ $teamNames = array(
 	"Lag {nummer}" => 'number',
 	"Team {nummer}" => 'number'
 	);
-function shuffle_assoc(&$array) {
-	$keys = array_keys($array);
-	shuffle($keys);
-	foreach($keys as $key) {
-		$new[$key] = $array[$key];
-	}
-	$array = $new;
-	return true;
-}
+
 
 $teamTypes = array(
 	'Automatisk' => 'auto',
@@ -248,9 +240,11 @@ $teamTypes = array(
 			?>
 			<div class="row flg_game">
 				<?php
+				$currentRound = $_GET['round'];
+				$currentMatch = $_GET['match'];
 
 				if ((isset($_GET['c1_goals']) && $_GET['c1_goals'] >= 10) or (isset($_GET['c2_goals']) && $_GET['c2_goals'] >= 10)) {
-					$_SESSION['results'][$_GET['round']][$_GET['match']] = array(
+					$_SESSION['results'][$currentRound][$currentMatch] = array(
 						'c1_goals' => $_GET['c1_goals'],
 						'c2_goals' => $_GET['c2_goals']
 						);
@@ -266,24 +260,32 @@ $teamTypes = array(
 
 				$bracket = $KO->getBracket();
 				$roundInfo = $KO->roundsInfo;
-
-				if ((isset($_GET['c1_goals']) && $_GET['c1_goals'] >= 10) or (isset($_GET['c2_goals']) && $_GET['c2_goals'] >= 10)) {
-					$next_match = 0;
-					$next_round = 0;
-					foreach ($bracket as $round => $match) {
-						$next_round = $round;
-						foreach ($match as $match_no => $info) {
-							$next_match = $match_no;
-							if ($_GET['round'] == $round && $match_no > $_GET['match']) {
-								break 2;
-							}
-							elseif (($_GET['round'] + 1) == $round && $match_no == 0) {
-								break 2;
-							}
+				$next_match = 0;
+				$next_round = 0;
+				foreach ($bracket as $round => $match) {
+					$next_round = $round;
+					foreach ($match as $match_no => $info) {
+						$next_match = $match_no;
+						if ($currentRound == $round && $match_no > $currentMatch) {
+							break 2;
+						}
+						elseif (($currentRound + 1) == $round && $match_no == 0) {
+							break 2;
 						}
 					}
-					if ($next_round == $_GET['round'] && $next_match == $_GET['match']) {
-						$final = $bracket[$_GET['round']][$_GET['match']];
+				}
+				if ($currentRound == 0 && $currentMatch == 0) {
+					if (!isset($bracket[$currentRound][$currentMatch])) {
+						$currentRound = $next_round;
+						$currentMatch = $next_match;
+					}
+				}
+				if (countMatches($bracket) == 0) {
+					echo "<h1>Vennligst velg flere lag</h1>";
+				}
+				if ((isset($_GET['c1_goals']) && $_GET['c1_goals'] >= 10) or (isset($_GET['c2_goals']) && $_GET['c2_goals'] >= 10)) {
+					if ($next_round == $currentRound && $next_match == $currentMatch) {
+						$final = $bracket[$currentRound][$currentMatch];
 						$winner = $final['c1'];
 						if ($final['s1'] < $final['s2']) {
 							$winner = $final['c2'];
@@ -297,10 +299,7 @@ $teamTypes = array(
 							<i class="fa fa-trophy"></i>
 						</center>
 						<h1 class="winner_title"><?php echo $winner['name']; ?></h1>
-						<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, dere vant turneringen!</h3>
-
-						<br /><br/>
-						<a href="/" class="btn btn-danger">Reset</a>
+						<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, dere vant <?php echo ((countMatches($bracket) > 1) ? 'turneringen' : 'kampen'); ?>!</h3>
 						<?php
 					}
 					else {
@@ -314,145 +313,87 @@ $teamTypes = array(
 					}
 				}
 				else {
-				foreach($bracket as $round => $match) :
-					if ($_GET['round'] == $round) : ?>
-					<?php
-						foreach ($match as $no => $info) :
-							if ($_GET['match'] == $no) : ?>
-						<div class="col-md-12">
-							<h1><?php echo $roundInfo[$round][0]; ?></h1>
-							<legend class="clearfix">
-								<span style="float:left; display: block; width: 45%;">
-									<?php echo $info['c1']['name']; ?>
-								</span>
-								<span style="float:left; display: block; width: 10%; text-align: center;">
-									<small>vs</small>
-								</span>
-								<span style="float:left; display: block; width: 45%; text-align: right;">
-									<?php echo $info['c2']['name']; ?>
-								</span>
-							</legend>
-						</div>
-						<div class="col-xs-6">
-							<div class="goals" id="c1_goals">
-								<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>
+					foreach($bracket as $round => $match) :
+						if ($currentRound == $round) : ?>
+						<?php
+							foreach ($match as $no => $info) :
+								if ($currentMatch == $no) : ?>
+							<div class="col-md-12">
+								<h1><?php echo $roundInfo[$round][0]; ?></h1>
+								<legend class="clearfix">
+									<span style="float:left; display: block; width: 45%;">
+										<?php echo $info['c1']['name']; ?>
+									</span>
+									<span style="float:left; display: block; width: 10%; text-align: center;">
+										<small>vs</small>
+									</span>
+									<span style="float:left; display: block; width: 45%; text-align: right;">
+										<?php echo $info['c2']['name']; ?>
+									</span>
+								</legend>
 							</div>
-							<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo (((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0') + 1); ?>&c2_goals=<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamone_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
-							<br/>
-							<label>Spillere:</label>
-							<br />
-							<ul class="list-unstyled">
-							<?php foreach ($info['c1']['players'] as $player) : ?>
-								<li><?php echo $player; ?></li>
-							<?php endforeach; ?>
-							</ul>
-						</div>
-						<div class="col-xs-6">
-							<div class="goals" id="c2_goals">
-								<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>
+							<div class="col-xs-6">
+								<div class="goals" id="c1_goals">
+									<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>
+								</div>
+								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo (((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0') + 1); ?>&c2_goals=<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamone_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
+								<br/>
+								<label>Spillere:</label>
+								<br />
+								<ul class="list-unstyled">
+								<?php foreach ($info['c1']['players'] as $player) : ?>
+									<li><?php echo $player; ?></li>
+								<?php endforeach; ?>
+								</ul>
 							</div>
-							<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>&c2_goals=<?php echo (((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0') + 1); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamtwo_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
-							<br/>
-							<label>Spillere:</label>
-							<br />
-							<ul class="list-unstyled">
-							<?php foreach ($info['c2']['players'] as $player) : ?>
-								<li><?php echo $player; ?></li>
-							<?php endforeach; ?>
-							</ul>
-						</div>
+							<div class="col-xs-6">
+								<div class="goals" id="c2_goals">
+									<?php echo ((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0'); ?>
+								</div>
+								<a href="?round=<?php echo $round; ?>&match=<?php echo $no; ?>&c1_goals=<?php echo ((isset($_GET['c1_goals'])) ? $_GET['c1_goals'] : '0'); ?>&c2_goals=<?php echo (((isset($_GET['c2_goals'])) ? $_GET['c2_goals'] : '0') + 1); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamtwo_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
+								<br/>
+								<label>Spillere:</label>
+								<br />
+								<ul class="list-unstyled">
+								<?php foreach ($info['c2']['players'] as $player) : ?>
+									<li><?php echo $player; ?></li>
+								<?php endforeach; ?>
+								</ul>
+							</div>
+						<?php
+							endif;
+						endforeach; ?>
 					<?php
 						endif;
 					endforeach; ?>
-				<?php
-					endif;
-				endforeach; ?>
-			</div>
-			<?php
-			}
-			/*?>
-			<div class="row flg_game">
-			<?php
-				$team = 0;
-				$matches = array();
-				for ($i = 0; $i < $gamesFirstRound; $i++) :
-					$team1 = $_SESSION['teams'][$team];
-					$team++;
-					$team2 = $_SESSION['teams'][$team];
-					$team++;
-					$matches[] = array($team1, $team2);
-					?>
-				<?php endfor; ?>
-				<?php if ($_GET['game'] <= count($matches)) : ?>
-
-					<?php $match = $matches[$_GET['game'] - 1]; ?>
-					<?php if ((isset($_GET['teamone_goals']) && $_GET['teamone_goals'] >= 10) or (isset($_GET['teamtwo_goals']) && $_GET['teamtwo_goals'] >= 10)) :
-						$match[0]['goals'] = $_GET['teamone_goals'];
-						$match[1]['goals'] = $_GET['teamtwo_goals'];
-						if (isset($_GET['teamone_goals']) && $_GET['teamone_goals'] >= 10) {
-							$winner = $match[0];
-						}
-						elseif (isset($_GET['teamtwo_goals']) && $_GET['teamtwo_goals'] >= 10) {
-							$winner = $match[1];
-						}
-						$_SESSION['results'][($_GET['game'] - 1)] = $match;
-					?>
-					<h1 class="winner_title">Gratulerer, <?php echo $winner['name']; ?>!</h1>
-					<h3 class="winner_sub_title">Dere vant</h3>
-					<br />
-					<?php if ($_GET['game'] < count($matches)) : ?>
-						<div class="row">
-							<div class="col-md-4 flg_action">
-								<a class="btn btn-success btn-large btn-block" href="?game=<?php echo ($_GET['game'] + 1); ?>">Neste spill</a>
-							</div>
-						</div>
-					<?php endif; ?>
-					<?php else: ?>
-					<div class="col-md-12">
-						<legend class="clearfix">
-							<span style="float:left; display: block; width: 45%;">
-								<?php echo $match[0]['name']; ?>
-							</span>
-							<span style="float:left; display: block; width: 10%; text-align: center;">
-								<small>vs</small>
-							</span>
-							<span style="float:left; display: block; width: 45%; text-align: right;">
-								<?php echo $match[1]['name']; ?>
-							</span>
-						</legend>
-					</div>
-					<div class="col-xs-6">
-						<div class="goals" id="teamone_goals">
-							<?php echo ((isset($_GET['teamone_goals'])) ? $_GET['teamone_goals'] : '0'); ?>
-						</div>
-						<a href="?game=<?php echo $_GET['game']; ?>&teamone_goals=<?php echo (((isset($_GET['teamone_goals'])) ? $_GET['teamone_goals'] : '0') + 1); ?>&teamtwo_goals=<?php echo ((isset($_GET['teamtwo_goals'])) ? $_GET['teamtwo_goals'] : '0'); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamone_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
-						<br/>
-						<label>Spillere:</label>
-						<br />
-						<ul class="list-unstyled">
-						<?php foreach ($match[0]['players'] as $player) : ?>
-							<li><?php echo $player; ?></li>
-						<?php endforeach; ?>
-						</ul>
-					</div>
-					<div class="col-xs-6">
-						<div class="goals" id="teamtwo_goals">
-							<?php echo ((isset($_GET['teamtwo_goals'])) ? $_GET['teamtwo_goals'] : '0'); ?>
-						</div>
-						<a href="?game=<?php echo $_GET['game']; ?>&teamone_goals=<?php echo ((isset($_GET['teamone_goals'])) ? $_GET['teamone_goals'] : '0'); ?>&teamtwo_goals=<?php echo (((isset($_GET['teamtwo_goals'])) ? $_GET['teamtwo_goals'] : '0') + 1); ?>" class="btn btn-large btn-primary btn-block new_goal" id="teamtwo_new_goal">&nbsp;<br />Mål<br/>&nbsp;</a>
-						<br/>
-						<label>Spillere:</label>
-						<br />
-						<ul class="list-unstyled">
-						<?php foreach ($match[1]['players'] as $player) : ?>
-							<li><?php echo $player; ?></li>
-						<?php endforeach; ?>
-						</ul>
-					</div>
-					<?php endif; ?>
 				</div>
-				<?php endif; */?>
+				<?php
+			}
+			?>
+			<br /><br/>
+			<a href="/" class="btn btn-danger">Reset</a>
 			<?php endif; ?>
 		</div>
 	</body>
 </html>
+
+<?php
+
+function shuffle_assoc(&$array) {
+	$keys = array_keys($array);
+	shuffle($keys);
+	foreach($keys as $key) {
+		$new[$key] = $array[$key];
+	}
+	$array = $new;
+	return true;
+}
+
+function countMatches($bracket) {
+	$num = 0;
+	foreach ($bracket as $key => $value) {
+		$num += count($value);
+	}
+	return $num;
+}
+?>
