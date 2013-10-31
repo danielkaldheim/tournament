@@ -298,6 +298,9 @@ $teamTypes = array(
 						</center>
 						<h1 class="winner_title"><?php echo $winner['name']; ?></h1>
 						<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, dere vant turneringen!</h3>
+
+						<br /><br/>
+						<a href="/" class="btn btn-danger">Reset</a>
 						<?php
 					}
 					else {
@@ -311,8 +314,6 @@ $teamTypes = array(
 					}
 				}
 				else {
-
-
 				foreach($bracket as $round => $match) :
 					if ($_GET['round'] == $round) : ?>
 					<?php
