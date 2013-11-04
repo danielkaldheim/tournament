@@ -17,8 +17,10 @@ $players = array(
 	"Magnus Hauge Bakke",
 	"Kjetil Sande"
 	);
+natsort($players);
 
 $teamNames = array(
+	'Automatisk' => 'auto',
 	"Kattepusar" => array(
 		"Tigers",
 		"Lions",
@@ -70,7 +72,7 @@ $teamNames = array(
 	"Lag {nummer}" => 'number',
 	"Team {nummer}" => 'number'
 	);
-
+ksort($teamNames);
 
 $teamTypes = array(
 	'Automatisk' => 'auto',
@@ -86,7 +88,7 @@ $teamTypes = array(
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>iDrift Fußball Lag Generator</title>
+		<title>Lag Generator</title>
 		<link href="assets/styles/style.css" rel="stylesheet">
 
 		<script src="/assets/vendor/jquery/jquery.js"></script>
@@ -104,12 +106,12 @@ $teamTypes = array(
 				$_SESSION['results'] = null;
 			?>
 			<div class="page-header">
-				<h1>iDrift Fußball Lag Generator</h1>
+				<h1>Lag Generator</h1>
 			</div>
 				<div class="flg_options <?php echo (($_GET['generateTeams']) ? 'hide_options' : ''); ?>">
 					<form method="POST" action="<?php $_SERVER['REQUEST_URI']; ?>">
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<legend>Velg spillere</legend>
 								<?php foreach ($players as $player) : ?>
 									<div class="checkbox">
@@ -120,7 +122,7 @@ $teamTypes = array(
 									</div>
 								<?php endforeach; ?>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<legend>Velg lagnavn</legend>
 									<select name="teamName">
 										<?php foreach ($teamNames as $teamName => $array) : ?>
@@ -128,7 +130,14 @@ $teamTypes = array(
 										<?php endforeach; ?>
 									</select>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
+								<legend>Velg Spill</legend>
+								<select name="gameType">
+									<option value="fosball">Fußball</option>
+									<option value="bordtennis">Bordtennis</option>
+								</select>
+							</div>
+							<div class="col-md-3">
 								<legend>Velg oppsett</legend>
 									<select name="teamType">
 										<?php foreach ($teamTypes as $teamType => $value) : ?>
@@ -148,12 +157,19 @@ $teamTypes = array(
 					<br/>
 					<div class="flg_team">
 						<?php
+						$teamName = $_POST['teamName'];
+						if ($_POST['teamName'] == "Automatisk") {
+							unset($teamNames['Automatisk']);
+							$keys = array_keys($teamNames);
+							shuffle($keys);
+							$teamName = array_pop($keys);
+						}
 						$teamNameNo = 0;
 						$teamRound = 0;
 						$noPlayers = 0;
 						$playersPrTeam = ((!isset($_POST['teamType']) or $_POST['teamType'] == 'auto') ? 2 : $_POST['teamType']);
 						$teams = array();
-						$selectedTeam = $teamNames[$_POST['teamName']];
+						$selectedTeam = $teamNames[$teamName];
 						if (is_array($selectedTeam)) {
 							shuffle($selectedTeam);
 						}
@@ -164,7 +180,7 @@ $teamTypes = array(
 								$teams["Team ".$selectedTeam[$teamNameNo].((!empty($teamRound) ? ' '.$teamRound : ''))][] = $player;
 							}
 							else {
-								$teams[str_replace('{nummer}', ($teamNameNo + 1), $_POST['teamName'])][] = $player;
+								$teams[str_replace('{nummer}', ($teamNameNo + 1), $teamName)][] = $player;
 							}
 							$noPlayers++;
 							if (($playersPrTeam == "auto" && ($noPlayers == 2 or (count($players) <= 4))) or ($noPlayers == $playersPrTeam)) {
