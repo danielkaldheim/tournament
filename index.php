@@ -15,6 +15,7 @@ $players = array(
 	"Sindre Seim Johansen",
 	"Daniel Rufus Kaldheim",
 	"Magnus Hauge Bakke",
+	"Kjetil Sande"
 	);
 
 $teamNames = array(
