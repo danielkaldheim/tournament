@@ -100,12 +100,12 @@ $teamTypes = array(
 
 	<body>
 		<div class="container">
-			<div class="page-header">
-				<h1>iDrift Fußball Lag Generator</h1>
-			</div>
 			<?php if (!isset($_GET['round']) && !isset($_GET['match'])) :
 				$_SESSION['results'] = null;
 			?>
+			<div class="page-header">
+				<h1>iDrift Fußball Lag Generator</h1>
+			</div>
 				<div class="flg_options <?php echo (($_GET['generateTeams']) ? 'hide_options' : ''); ?>">
 					<form method="POST" action="<?php $_SERVER['REQUEST_URI']; ?>">
 						<div class="row">
