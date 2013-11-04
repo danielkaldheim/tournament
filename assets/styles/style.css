@@ -11468,6 +11468,20 @@ fieldset[disabled] .container .btn-dark.active {
   background-color: #222222;
   border-color: #161616;
 }
+.video-embed {
+  position: relative;
+  padding-bottom: 56.25%;
+  /* 16:9 */
+  padding-top: 25px;
+  height: 0;
+}
+.video-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 @media (max-width: 767px) {
   .btn.new_goal {
     padding-top: 30px !important;

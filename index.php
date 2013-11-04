@@ -292,9 +292,15 @@ $teamTypes = array(
 							$last_pl = array_pop($players);
 						}
 						?>
-						<center>
-							<i class="fa fa-trophy"></i>
-						</center>
+						<?php if (rand(0,100) == 50) : ?>
+							<div class="video-embed">
+								<iframe width="960" height="720" src="//www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allowfullscreen></iframe>
+							</div>
+						<?php else: ?>
+							<center>
+								<i class="fa fa-trophy"></i>
+							</center>
+						<?php endif; ?>
 						<h1 class="winner_title"><?php echo $winner['name']; ?></h1>
 						<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, <?php echo ((count($winner['players']) > 1) ? 'dere' : 'du'); ?> vant <?php echo ((countMatches($bracket) > 1) ? 'turneringen' : 'kampen'); ?>!</h3>
 						<?php
