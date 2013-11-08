@@ -15,7 +15,8 @@ $players = array(
 	"Sindre Seim Johansen",
 	"Daniel Rufus Kaldheim",
 	"Magnus Hauge Bakke",
-	"Kjetil Sande"
+	"Kjetil Sande",
+	"Erlend Aga"
 	);
 natsort($players);
 
@@ -80,7 +81,12 @@ $teamTypes = array(
 	'2 Per lag' => '2',
 	'4 Per lag' => '4',
 	'5 Per lag' => '5'
-	)
+	);
+
+$gameType = array(
+	'fosball' => 'Fußball',
+	'bordtennis' => 'Bordtennis'
+	);
 
 ?>
 <!DOCTYPE html>
@@ -133,8 +139,9 @@ $teamTypes = array(
 							<div class="col-md-3">
 								<legend>Velg Spill</legend>
 								<select name="gameType">
-									<option value="fosball">Fußball</option>
-									<option value="bordtennis">Bordtennis</option>
+									<?php foreach ($gameType as $key => $title) : ?>
+										<option value="<?php echo $key; ?>"<?php echo ((isset($_POST['gameType']) && $_POST['gameType'] == $key) ? 'selected' : ''); ?>><?php echo $title; ?></option>
+									<?php endforeach; ?>
 								</select>
 							</div>
 							<div class="col-md-3">
@@ -167,7 +174,16 @@ $teamTypes = array(
 						$teamNameNo = 0;
 						$teamRound = 0;
 						$noPlayers = 0;
-						$playersPrTeam = ((!isset($_POST['teamType']) or $_POST['teamType'] == 'auto') ? 2 : $_POST['teamType']);
+						switch ($_POST['gameType']) {
+							case 'bordtennis':
+								$defaultPlayersPrTeam = 1;
+								break;
+							case 'fosball':
+							default:
+								$defaultPlayersPrTeam = 2;
+								break;
+						}
+						$playersPrTeam = ((!isset($_POST['teamType']) or $_POST['teamType'] == 'auto') ? $defaultPlayersPrTeam : $_POST['teamType']);
 						$teams = array();
 						$selectedTeam = $teamNames[$teamName];
 						if (is_array($selectedTeam)) {
@@ -292,7 +308,7 @@ $teamTypes = array(
 							$last_pl = array_pop($players);
 						}
 						?>
-						<?php if (rand(0,100) == 50) : ?>
+						<?php if (rand(1,100) == 50) : ?>
 							<div class="video-embed">
 								<iframe width="960" height="720" src="//www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allowfullscreen></iframe>
 							</div>
