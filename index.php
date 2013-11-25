@@ -2,7 +2,12 @@
 session_start();
 ob_start();
 ini_set('display_errors', 'On');
+
+require_once('config.php');
+require('db.php');
 include("class_knockout.php");
+
+
 $players = array(
 	"Stian Lauknes",
 	"Kenneth Johanson",
