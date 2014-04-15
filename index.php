@@ -117,10 +117,10 @@ $selectedTeamName = ((isset($_POST['teamName'])) ? $_POST['teamName'] : 'Automat
 		<meta name="apple-mobile-web-app-capable" content="yes">
 
 		<!-- Make the status bar black with white text. -->
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-status-bar-style" content="white">
 
 		<!-- Customize home screen title. -->
-		<meta name="apple-mobile-web-app-title" content="Web App">
+		<meta name="apple-mobile-web-app-title" content="Lag Generator">
 
 		<!-- Disable phone number detection. -->
 		<meta name="format-detection" content="telephone=no">
@@ -365,15 +365,9 @@ $selectedTeamName = ((isset($_POST['teamName'])) ? $_POST['teamName'] : 'Automat
 					$last_pl = array_pop($players);
 				}
 				?>
-				<?php if (rand(1,100) == 50) : ?>
-					<div class="video-embed">
-						<iframe width="960" height="720" src="//www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allowfullscreen></iframe>
-					</div>
-				<?php else: ?>
-					<center>
-						<i class="fa fa-trophy"></i>
-					</center>
-				<?php endif; ?>
+				<center>
+					<i class="fa fa-trophy"></i>
+				</center>
 				<h1 class="winner_title"><?php echo $winner['name']; ?></h1>
 				<h3 class="winner_sub_title">Gratulerer <?php echo implode(', ', $players).((isset($last_pl)) ? ' og '.$last_pl : ''); ?>, <?php echo ((count($winner['players']) > 1) ? 'dere' : 'du'); ?> vant <?php echo ((countMatches($bracket) > 1) ? 'turneringen' : 'kampen'); ?>!</h3>
 				<?php
