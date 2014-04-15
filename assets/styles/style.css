@@ -11362,6 +11362,15 @@ div.jQBracket.rl .highlightLoser .bubble:after {
 /**
  * Includes end
  */
+body:before {
+  display: block;
+  content: " ";
+  height: 20px;
+  top: 0;
+  background: rgba(0, 0, 0, 0.8);
+  position: -webkit-sticky;
+  position: sticky;
+}
 .container {
   -webkit-animation-duration: 1s;
   -moz-animation-duration: 1s;
