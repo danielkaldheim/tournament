@@ -75,6 +75,17 @@ $teamNames = array(
 		"Rådgivning",
 		"Webutviklng"
 		),
+	"Android" => array(
+		"Cupcake",
+		"Donut",
+		"Eclair",
+		"Froyo",
+		"Gingerbread",
+		"Honeycomb",
+		"Ice Cream Sandwich",
+		"Jelly Bean",
+		"KitKat"
+		),
 	"Lag {nummer}" => 'number',
 	"Team {nummer}" => 'number'
 	);
