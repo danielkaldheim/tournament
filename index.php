@@ -117,7 +117,7 @@ $selectedTeamName = ((isset($_POST['teamName'])) ? $_POST['teamName'] : 'Automat
 		<meta name="apple-mobile-web-app-capable" content="yes">
 
 		<!-- Make the status bar black with white text. -->
-		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 		<!-- Customize home screen title. -->
 		<meta name="apple-mobile-web-app-title" content="Lag Generator">
