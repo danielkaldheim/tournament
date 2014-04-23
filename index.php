@@ -19,7 +19,9 @@ $players = array(
 	"Daniel Rufus Kaldheim",
 	"Magnus Hauge Bakke",
 	"Kjetil Sande",
-	"Erlend Aga"
+	"Erlend Aga",
+	"Hein Tore",
+	"Ernst"
 	);
 natsort($players);
 
