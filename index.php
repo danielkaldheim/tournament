@@ -18,11 +18,9 @@ $players = array(
 	"Sindre Seim Johansen",
 	"Daniel Rufus Kaldheim",
 	"Magnus Hauge Bakke",
+	"Pål Bjørhovde",
 	"Kjetil Sande (Skogen)",
 	"Erlend Aga",
-	"Andreas Røyrvik",
-	"Hein Tore Tønnesen (Appex)",
-	"Ernst (Appex)"
 	);
 natsort($players);
 
